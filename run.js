@@ -7,7 +7,8 @@ process.env.TZ = 'Asia/Jakarta';
  */
 function start(cmd) {
     try {
-        // Spawn the desired command process
+        console.clear();
+
         const childProcess = spawn(cmd, [], {
             stdio: ['inherit', 'inherit', 'inherit', 'ipc']
         });
