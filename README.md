@@ -1,11 +1,15 @@
-# Bahan Sebelum Install Pterodactyl
+# auto Script Singkat
 
-Pasang swapfile
+## Root SSH
+```bash
+wget --no-check-certificate -qO- https://raw.githubusercontent.com/Mark-HDR/Pterodactyl/main/root.sh | bash && rm -f root.sh
+```
 
-Step: 1
-```sh
-wget --no-check-certificate -O setup_swap.sh https://raw.githubusercontent.com/Mark-HDR/Pterodactyl/main/auto_swapfile.sh && sudo bash setup_swap.sh && rm -f setup_swap.sh
+## auto swapfile
+```bash
+wget --no-check-certificate -qO- https://raw.githubusercontent.com/Mark-HDR/Pterodactyl/main/auto_swapfile.sh | bash && rm -f auto_swapfile.sh
 
+```
 
-
-akxbaxa
+## Important Note:
+- Jangan Lupa Makan
