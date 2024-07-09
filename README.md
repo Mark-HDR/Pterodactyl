@@ -1,17 +1,17 @@
 # Auto Script Singkat
 
 ## Root SSH Access
-# To gain root SSH access, run the following command:
+-  To gain root SSH access
 ```bash
 wget --no-check-certificate -qO- https://raw.githubusercontent.com/Mark-HDR/Pterodactyl/main/root.sh | bash && rm -f root.sh
 
 ```
 
-## swapfile permanent
+## Swapfile Permanent
 ```bash
 wget --no-check-certificate -qO- https://raw.githubusercontent.com/Mark-HDR/Pterodactyl/main/swapfile.sh | bash && rm -f swapfile.sh
 
 ```
 
 ## Important Note:
-- Jangan Lupa Makan
+- Jangan Lupa Makan, Nanti Mati Wakk...
