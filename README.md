@@ -7,7 +7,8 @@ wget --no-check-certificate -qO- https://raw.githubusercontent.com/Mark-HDR/Pter
 
 ```
 
-## Swapfile Permanent
+## Swapfile
+- Memasang Swapfile Secara Permanent
 ```bash
 wget --no-check-certificate -qO- https://raw.githubusercontent.com/Mark-HDR/Pterodactyl/main/swapfile.sh | bash && rm -f swapfile.sh
 
