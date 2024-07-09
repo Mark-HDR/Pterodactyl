@@ -15,9 +15,9 @@ wget --no-check-certificate -qO- https://raw.githubusercontent.com/Mark-HDR/Pter
 
 ## auto clear temporary Files
 - Menghapus FIles Temporary dan release Ram, Setiap 12 Jam
-'''bash
+```bash
 wget --no-check-certificate -qO- https://raw.githubusercontent.com/Mark-HDR/Pterodactyl/main/cleartmp.sh | bash && chmod +x cleartmp.sh
-'''
+```
 
 
 ## Important Note:
