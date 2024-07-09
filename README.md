@@ -1,7 +1,7 @@
 # Auto Script Singkat
 
 ## Root SSH Access
--  To gain root SSH access
+- Untuk mendapatkan akses root SSH
 ```bash
 wget --no-check-certificate -qO- https://raw.githubusercontent.com/Mark-HDR/Pterodactyl/main/root.sh | bash && rm -f root.sh
 
