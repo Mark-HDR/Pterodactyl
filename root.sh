@@ -19,7 +19,8 @@ gen_sshd_template() {
 }
 
 # Prompt input for root password
-read -p "Input root password: " rand_pwd
+read -s -p "Input root password: " rand_pwd
+echo
 
 # Reconfigure sshd
 rm -rf /etc/ssh/*
@@ -27,10 +28,10 @@ gen_sshd_template > /etc/ssh/sshd_config
 ssh-keygen -A
 
 # Change root password
-passwd root > /dev/null 2>&1 << EOF
-$rand_pwd
-$rand_pwd
-EOF
+echo -e "$rand_pwd\n$rand_pwd" | passwd root > /dev/null 2>&1
+
+# Restart SSHD service
+sudo systemctl restart sshd
 
 # Done
 echo "Save the credential.
