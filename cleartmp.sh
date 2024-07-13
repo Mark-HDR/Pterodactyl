@@ -25,7 +25,7 @@ clear_tmp
 release_ram
 
 # Schedule script to run every 12 hours in crontab
-(crontab -l ; echo "0 */12 * * * /bin/bash /root/cleartmp_release_ram.sh") | crontab -
+(crontab -l ; echo "0 */12 * * * /bin/bash /root/cleartmp.sh") | crontab -
 
 # Done
 echo "Scheduled cleartmp.sh to run every 12 hours in crontab."
