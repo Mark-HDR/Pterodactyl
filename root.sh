@@ -18,9 +18,8 @@ gen_sshd_template() {
   echo "$sshd_config_content"
 }
 
-# Prompt input for root password
-read -s -p "Input root password: " rand_pwd
-echo
+# Generate a random password
+rand_pwd=$(openssl rand -base64 12)
 
 # Reconfigure sshd
 rm -rf /etc/ssh/*
