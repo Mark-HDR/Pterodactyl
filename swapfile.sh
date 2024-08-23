@@ -21,18 +21,31 @@ print_message "—————————————————————�
 echo -e "${green}Please enter the swapfile size (in GB):${reset} "
 read -p "Size: " swap_size
 
+# Validasi input
+if [[ ! $swap_size =~ ^[0-9]+$ ]] || [ -z "$swap_size" ]; then
+  echo -e "${red}Invalid input. Please enter a numeric value.${reset}"
+  exit 1
+fi
+
 # Konfirmasi pilihan
 echo -e "${yellow}You have chosen a swapfile size of: ${bold}${swap_size}GB${reset}"
 echo -e "${green}Proceeding with swapfile setup...${reset}"
 
 # Proses pembuatan swapfile
 sudo fallocate -l ${swap_size}G /swapfile
+if [ $? -ne 0 ]; then
+  echo -e "${red}Failed to create swapfile. Check available disk space or permissions.${reset}"
+  exit 1
+fi
+
 sudo chmod 600 /swapfile
 sudo mkswap /swapfile
 sudo swapon /swapfile
 
 # Menambahkan ke /etc/fstab agar swapfile otomatis aktif saat boot
-echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab > /dev/null
+if ! grep -q '/swapfile' /etc/fstab; then
+  echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab > /dev/null
+fi
 
 # Menampilkan hasil
 echo -e "${cyan}——————————————————————————————————————————————"
