@@ -19,7 +19,7 @@ print_message "—————————————————————�
 print_message "         ${bold}${yellow}Swapfile Setup Wizard${reset}${cyan}"
 print_message "——————————————————————————————————————————————"
 echo -e "${green}Please enter the swapfile size (in GB):${reset} "
-read -p "Size: " swap_size
+read -r swap_size
 
 # Validasi input
 if [[ ! $swap_size =~ ^[0-9]+$ ]] || [ -z "$swap_size" ]; then
@@ -32,7 +32,7 @@ echo -e "${yellow}You have chosen a swapfile size of: ${bold}${swap_size}GB${res
 echo -e "${green}Proceeding with swapfile setup...${reset}"
 
 # Proses pembuatan swapfile
-sudo fallocate -l ${swap_size}G /swapfile
+sudo fallocate -l "${swap_size}G" /swapfile
 if [ $? -ne 0 ]; then
   echo -e "${red}Failed to create swapfile. Check available disk space or permissions.${reset}"
   exit 1
