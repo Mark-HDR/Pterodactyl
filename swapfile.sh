@@ -1,54 +1,53 @@
 #!/bin/bash
 
-# Warna
-green="\e[32m"
-cyan="\e[36m"
-yellow="\e[33m"
-red="\e[31m"
-bold="\e[1m"
-reset="\e[0m"
+# Warna untuk output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+CYAN='\033[0;36m'
+NC='\033[0m' # No Color
 
-# Fungsi untuk menampilkan pesan
-function print_message() {
-  echo -e "${cyan}$1${reset}"
-}
+echo -e "${CYAN}=========================================="
+echo -e "         ${YELLOW}Swapfile Installer Script${CYAN}"
+echo -e "==========================================${NC}"
 
-# Meminta ukuran swapfile
-clear
-print_message "——————————————————————————————————————————————"
-print_message "         ${bold}${yellow}Swapfile Setup Wizard${reset}${cyan}"
-print_message "——————————————————————————————————————————————"
-echo -e "${green}Please enter the swapfile size (in GB):${reset} "
-read -r swap_size
+# Meminta input ukuran swapfile dari pengguna
+read -p "Masukkan ukuran swapfile yang diinginkan (contoh: 32G, 4096M): " SWAP_SIZE
 
-# Validasi input
-if [[ ! $swap_size =~ ^[0-9]+$ ]] || [ -z "$swap_size" ]; then
-  echo -e "${red}Invalid input. Please enter a numeric value.${reset}"
+# Memastikan pengguna mengisi ukuran swapfile
+if [ -z "$SWAP_SIZE" ]; then
+  echo -e "${RED}Error: Ukuran swapfile tidak boleh kosong!${NC}"
   exit 1
 fi
 
-# Konfirmasi pilihan
-echo -e "${yellow}You have chosen a swapfile size of: ${bold}${swap_size}GB${reset}"
-echo -e "${green}Proceeding with swapfile setup...${reset}"
+echo -e "${GREEN}Step 1: Menyiapkan swapfile sebesar $SWAP_SIZE...${NC}"
+sudo fallocate -l $SWAP_SIZE /swapfile
 
-# Proses pembuatan swapfile
-sudo fallocate -l "${swap_size}G" /swapfile
-if [ $? -ne 0 ]; then
-  echo -e "${red}Failed to create swapfile. Check available disk space or permissions.${reset}"
-  exit 1
-fi
-
+echo -e "${GREEN}Step 2: Mengatur izin swapfile...${NC}"
 sudo chmod 600 /swapfile
+
+echo -e "${GREEN}Step 3: Membuat swap area...${NC}"
 sudo mkswap /swapfile
+
+echo -e "${GREEN}Step 4: Mengaktifkan swapfile...${NC}"
 sudo swapon /swapfile
 
-# Menambahkan ke /etc/fstab agar swapfile otomatis aktif saat boot
-if ! grep -q '/swapfile' /etc/fstab; then
-  echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab > /dev/null
-fi
+echo -e "${GREEN}Step 5: Menambahkan swapfile ke fstab agar permanen...${NC}"
+echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
 
-# Menampilkan hasil
-echo -e "${cyan}——————————————————————————————————————————————"
-echo -e "${bold}${yellow}Swapfile setup completed!${reset}${cyan}"
-echo -e "Your system now has a swapfile of ${bold}${swap_size}GB${reset}${cyan}."
-echo -e "——————————————————————————————————————————————${reset}"
+echo -e "${GREEN}Step 6: Mengoptimalkan pengaturan swap...${NC}"
+# Mengatur swappiness (nilai default adalah 60, nilai ini lebih cocok diubah sesuai kebutuhan)
+sudo sysctl vm.swappiness=10
+echo 'vm.swappiness=10' | sudo tee -a /etc/sysctl.conf
+
+# Mengatur cache pressure
+sudo sysctl vm.vfs_cache_pressure=50
+echo 'vm.vfs_cache_pressure=50' | sudo tee -a /etc/sysctl.conf
+
+echo -e "${CYAN}=========================================="
+echo -e "           ${YELLOW}Installation Complete!${CYAN}"
+echo -e "==========================================${NC}"
+
+# Menampilkan status swap
+echo -e "${GREEN}Status Swapfile:${NC}"
+sudo swapon --show
