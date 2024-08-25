@@ -40,11 +40,33 @@ echo -e "$rand_pwd\n$rand_pwd" | passwd root > /dev/null 2>&1
 # Restart SSHD service
 sudo systemctl restart sshd > /dev/null 2>&1
 
+# Get public IP details
+ip_details=$(curl -s https://ifconfig.co/json)
+ipv4=$(echo "$ip_details" | grep -oP '(?<="ip": ")[^"]+')
+country=$(echo "$ip_details" | grep -oP '(?<="country": ")[^"]+')
+region=$(echo "$ip_details" | grep -oP '(?<="region_name": ")[^"]+')
+city=$(echo "$ip_details" | grep -oP '(?<="city": ")[^"]+')
+timezone=$(echo "$ip_details" | grep -oP '(?<="time_zone": ")[^"]+')
+isp=$(echo "$ip_details" | grep -oP '(?<="asn_org": ")[^"]+')
+os_name=$(lsb_release -ds)
+os_version=$(lsb_release -rs)
+
 # Done
-echo "Save the credential.
-======================================
+echo "SIlahkan Simpan data akun VPS anda
+===================================
+
+IPv4: $ipv4
 User: root
 Password: $rand_pwd
 Port: 22
-======================================
+
+-----------------------------------
+
+OS: $os_name $os_version
+Country: $country
+Region: $region
+City: $city
+Timezone: $timezone
+ISP: $isp
+===================================
 "
