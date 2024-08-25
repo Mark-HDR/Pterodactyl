@@ -52,7 +52,7 @@ os_name=$(lsb_release -ds)
 os_version=$(lsb_release -rs)
 
 # Done
-echo "SIlahkan Simpan data akun VPS anda
+echo "Silahkan Simpan data akun VPS anda
 ===================================
 
 IPv4: $ipv4
