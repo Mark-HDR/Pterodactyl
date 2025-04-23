@@ -1,54 +1,145 @@
-#!/bin/bash
-search_dir="/var/lib/pterodactyl/volumes"
-files_to_search=("proxy.txt" "proxies.txt" "ua.txt" "useragent.txt" "useragents.txt" "http.txt" "https.txt" "socks4.txt" "socks5.txt")
+const fs = require("fs");
+const path = require("path");
+const moment = require("moment-timezone");
+const chalk = require("chalk");
 
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-CYAN='\033[0;36m'
-RESET='\033[0m'
+// 📂 Direktori dasar
+const BASE_DIRECTORY = "/var/lib/pterodactyl/volumes";
 
-print_message() {
-    local color="$1"
-    shift
-    echo -e "${color}$@${RESET}"
+// 🕵️‍♂️ Daftar nama file mencurigakan (keyword)
+const SUSPICIOUS_FILENAMES = [
+  "proxy.txt", "ua.txt", "proxy.json",
+  "ddos.js", "tls.js", "ssh.js",
+  "http.js", "https.js", "tcp.js",
+  "mix.js", "useragent.txt", "useragents.txt",
+  "http.txt", "https.txt", "socks4.txt",
+  "socks5.txt", "proxies.txt",
+];
+
+// 📦 Modul-modul mencurigakan
+const SUSPICIOUS_MODULES = [
+  "cloudscraper", "request", "http", "https", "http2",
+  "net", "tls", "cluster", "user-agents", "crypto",
+  "header-generator", "gradient-string"
+];
+
+// 🎨 Warna output
+const label = {
+  found: chalk.bgRed.white.bold(" FOUND "),
+  file: chalk.cyanBright("📄 Suspicious File"),
+  module: chalk.magentaBright("📦 Suspicious Module"),
+  path: chalk.greenBright("📂 Path"),
+  time: chalk.yellowBright("⏰ Time"),
+  safe: chalk.bgGreen.black(" CLEAN ")
+};
+
+// 📁 Ambil semua folder dalam direktori dasar
+function getAllSubdirectories(basePath) {
+  return fs.readdirSync(basePath)
+    .map(name => path.join(basePath, name))
+    .filter(source => fs.statSync(source).isDirectory());
 }
 
-search_files() {
-    local file_name="$1"
-    print_message "$GREEN" "Searching for: ${file_name}"
-    results=$(find "$search_dir" -type f -name "$file_name" 2>/dev/null)
-    
-    if [[ -n "$results" ]]; then
-        print_message "$YELLOW" "Files found for ${file_name}:"
-        while IFS= read -r file_path; do
-            file_time=$(date -r "$file_path" +"%Y-%m-%d %H:%M:%S")
-            print_message "$CYAN" " - ${file_path} (Last Modified: $file_time)"
-        done <<< "$results"
-        return 0
-    else
-        print_message "$RED" "No files found for ${file_name}."
-        return 1
-    fi
+// 🔍 Deteksi file mencurigakan berdasarkan nama (case-insensitive, partial match)
+function detectSuspiciousFiles(folderPath) {
+  const files = fs.readdirSync(folderPath);
+  return files
+    .filter(file => {
+      const fileLower = file.toLowerCase();
+      return SUSPICIOUS_FILENAMES.some(susp => fileLower.includes(susp.toLowerCase()));
+    })
+    .map(file => {
+      const fullPath = path.join(folderPath, file);
+      const lastModified = getFormattedTime(fullPath);
+      return `${label.found} ${label.file}\n${label.path}: ${fullPath}\n${label.time}: ${lastModified}\n`;
+    });
 }
-start_time=$(date +"%Y-%m-%d %H:%M:%S")
 
-print_message "$CYAN" "========= SEARCH LOG ========="
-print_message "$YELLOW" "Search Directory: $search_dir"
-print_message "$YELLOW" "Search Start Time: $start_time"
-print_message "$CYAN" "=============================="
+// 📦 Cek apakah package.json mengandung module mencurigakan
+function detectSuspiciousModules(packageJsonPath) {
+  try {
+    const content = JSON.parse(fs.readFileSync(packageJsonPath));
+    const dependencies = [
+      ...Object.keys(content.dependencies || {}),
+      ...Object.keys(content.devDependencies || {})
+    ];
+    return dependencies.filter(dep => SUSPICIOUS_MODULES.includes(dep));
+  } catch {
+    return [];
+  }
+}
 
-found_files=0
-for file_name in "${files_to_search[@]}"; do
-    if search_files "$file_name"; then
-        ((found_files++))
-    fi
-    print_message "$CYAN" "-----------------------------"
-done
+// 🔍 Cari file .js yang menggunakan module mencurigakan
+function findModuleUsage(folderPath, suspiciousModules) {
+  const results = [];
 
-end_time=$(date +"%Y-%m-%d %H:%M:%S")
+  function traverse(currentPath) {
+    const files = fs.readdirSync(currentPath);
+    for (const file of files) {
+      const fullPath = path.join(currentPath, file);
+      const stat = fs.statSync(fullPath);
 
-print_message "$CYAN" "========= SEARCH SUMMARY ========="
-print_message "$YELLOW" "Search End Time: $end_time"
-print_message "$YELLOW" "Total Files Found: $found_files"
-print_message "$CYAN" "=================================="
+      if (stat.isDirectory()) {
+        traverse(fullPath);
+      } else if (file.toLowerCase().endsWith(".js")) {
+        const content = fs.readFileSync(fullPath, "utf-8").toLowerCase();
+        for (const mod of suspiciousModules) {
+          const modLower = mod.toLowerCase();
+          if (
+            content.includes(`require("${modLower}")`) ||
+            content.includes(`require('${modLower}')`) ||
+            content.includes(`from "${modLower}"`) ||
+            content.includes(`from '${modLower}'`)
+          ) {
+            const lastModified = getFormattedTime(fullPath);
+            results.push(`${label.found} ${label.module} "${chalk.bold(mod)}"\n${label.path}: ${fullPath}\n${label.time}: ${lastModified}\n`);
+            break;
+          }
+        }
+      }
+    }
+  }
+
+  traverse(folderPath);
+  return results;
+}
+
+// 🕒 Format waktu dengan zona Asia/Jakarta
+function getFormattedTime(filePath) {
+  const stats = fs.statSync(filePath);
+  return moment(stats.mtime).tz("Asia/Jakarta").format("YYYY-MM-DD HH:mm:ss");
+}
+
+// 🚀 Fungsi utama untuk scanning
+function scanDdosScripts(baseDirectory) {
+  const folders = getAllSubdirectories(baseDirectory);
+  const findings = [];
+
+  for (const folder of folders) {
+    const foundFiles = detectSuspiciousFiles(folder);
+    if (foundFiles.length > 0) {
+      findings.push(...foundFiles);
+      continue;
+    }
+
+    const packageJsonPath = path.join(folder, "package.json");
+    if (fs.existsSync(packageJsonPath)) {
+      const suspiciousModules = detectSuspiciousModules(packageJsonPath);
+      if (suspiciousModules.length > 0) {
+        const usages = findModuleUsage(folder, suspiciousModules);
+        findings.push(...usages);
+      }
+    }
+  }
+
+  return findings;
+}
+
+// ▶ Jalankan scanner
+const results = scanDdosScripts(BASE_DIRECTORY);
+if (results.length > 0) {
+  console.log(chalk.red.bold(`\n🚨 ${results.length} suspicious files/modules found:\n`));
+  console.log(results.join("\n"));
+} else {
+  console.log(`\n${label.safe} ${chalk.green("Tidak ditemukan file atau module mencurigakan.")}\n`);
+}
