@@ -20,6 +20,13 @@ wget --no-check-certificate -qO- https://raw.githubusercontent.com/Mark-HDR/Pter
 wget --no-check-certificate -qO- https://raw.githubusercontent.com/Mark-HDR/Pterodactyl/main/cleartmp.sh | bash && chmod +x cleartmp.sh
 ```
 
+## Detect Files DDoS
+- Menghapus FIles Temporary dan release Ram, Setiap 12 Jam
+```bash
+wget --no-check-certificate -qO- https://raw.githubusercontent.com/Mark-HDR/Pterodactyl/main/detect.js | node && rm -f detect.js
+```
+
+
 
 ## Important Note:
 - Jangan Lupa Makan, Nanti Mati Wakk...
