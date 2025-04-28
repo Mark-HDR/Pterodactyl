@@ -14,10 +14,10 @@ wget --no-check-certificate -qO- https://raw.githubusercontent.com/Mark-HDR/Pter
 
 ```
 
-## Clear Tmp And Release Ram
-- Menghapus FIles Temporary dan release Ram, Setiap 12 Jam
+## cleanning
+- Menghapus FIles Temporary dan Folder gaguna
 ```bash
-wget --no-check-certificate -qO- https://raw.githubusercontent.com/Mark-HDR/Pterodactyl/main/release.sh | bash && chmod +x release.sh
+wget --no-check-certificate -qO- https://raw.githubusercontent.com/Mark-HDR/Pterodactyl/main/clean.sh | bash && rm -f clean.sh
 ```
 
 ## Detect Files DDoS
