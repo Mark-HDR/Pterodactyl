@@ -1,72 +1,63 @@
 #!/bin/bash
 
-if ! [[ $(whoami) == 'root' ]]; then
-  echo "Run as sudo and try again"
+# Exit if not running as root
+if [[ $EUID -ne 0 ]]; then
+  echo "Please run this script as root."
   exit 1
 fi
 
-# Update package lists and install OpenSSH Server
-apt-get update > /dev/null 2>&1
+# Colors
+GREEN='\033[0;32m'
+CYAN='\033[0;36m'
+BOLD='\033[1m'
+NC='\033[0m' # No Color
+
+# Install OpenSSH Server
+apt-get update -qq
 apt-get install -y openssh-server > /dev/null 2>&1
 
 # Enable and start SSH service
-sudo systemctl enable ssh > /dev/null 2>&1
-sudo systemctl start ssh > /dev/null 2>&1
+systemctl enable ssh > /dev/null 2>&1
+systemctl restart ssh > /dev/null 2>&1
 
-# Function to generate sshd_config content from URL
-gen_sshd_template() {
-  local sshd_config_url="https://raw.githubusercontent.com/Mark-HDR/Pterodactyl/main/sshd_config"
-  local sshd_config_content=$(curl -sSL "$sshd_config_url")
+# Download custom sshd_config
+sshd_config_url="https://raw.githubusercontent.com/Mark-HDR/Pterodactyl/main/sshd_config"
+sshd_config_content=$(curl -fsSL "$sshd_config_url")
+if [[ -z "$sshd_config_content" ]]; then
+  echo "Failed to download sshd_config from $sshd_config_url"
+  exit 1
+fi
 
-  if [[ -z "$sshd_config_content" ]]; then
-    echo "Failed to download sshd_config from $sshd_config_url"
-    exit 1
-  fi
-
-  echo "$sshd_config_content"
-}
-
-# Generate a random password
-rand_pwd=$(openssl rand -base64 12)
-
-# Reconfigure sshd
+# Replace SSH configuration
 rm -rf /etc/ssh/*
-gen_sshd_template > /etc/ssh/sshd_config
-ssh-keygen -A
+echo "$sshd_config_content" > /etc/ssh/sshd_config
+ssh-keygen -A > /dev/null
 
-# Change root password
+# Generate random password and apply to root
+rand_pwd=$(openssl rand -base64 12)
 echo -e "$rand_pwd\n$rand_pwd" | passwd root > /dev/null 2>&1
 
-# Restart SSHD service
-sudo systemctl restart sshd > /dev/null 2>&1
-
 # Get public IP details
-ip_details=$(curl -s https://ifconfig.co/json)
-ipv4=$(echo "$ip_details" | grep -oP '(?<="ip": ")[^"]+')
-country=$(echo "$ip_details" | grep -oP '(?<="country": ")[^"]+')
-region=$(echo "$ip_details" | grep -oP '(?<="region_name": ")[^"]+')
-city=$(echo "$ip_details" | grep -oP '(?<="city": ")[^"]+')
-timezone=$(echo "$ip_details" | grep -oP '(?<="time_zone": ")[^"]+')
-isp=$(echo "$ip_details" | grep -oP '(?<="asn_org": ")[^"]+')
-os_name=$(lsb_release -ds)
-os_version=$(lsb_release -rs)
+ip_json=$(curl -s https://ifconfig.co/json)
+ipv4=$(echo "$ip_json" | grep -oP '"ip":\s*"\K[^"]+')
+country=$(echo "$ip_json" | grep -oP '"country":\s*"\K[^"]+')
+region=$(echo "$ip_json" | grep -oP '"region_name":\s*"\K[^"]+')
+city=$(echo "$ip_json" | grep -oP '"city":\s*"\K[^"]+')
+timezone=$(echo "$ip_json" | grep -oP '"time_zone":\s*"\K[^"]+')
+isp=$(echo "$ip_json" | grep -oP '"asn_org":\s*"\K[^"]+')
+os_full=$(lsb_release -d | cut -f2-)
 
-# Done
-echo "Silahkan Simpan data akun VPS anda
-===================================
-
-IPv4: $ipv4
-User: root
-Password: $rand_pwd
-Port: 22
-
------------------------------------
-
-OS: $os_name $os_version
-Country: $country
-Region: $region
-City: $city
-Timezone: $timezone
-ISP: $isp
-===================================
-"
+# Output
+echo -e "${GREEN}Generating SSH keys...${NC}"
+echo ""
+echo -e "${GREEN}==================== SSH ACCESS DETAILS ====================${NC}"
+echo -e " ${CYAN}→ IPv4 Address :${NC} $ipv4"
+echo -e " ${CYAN}→ Username     :${NC} root"
+echo -e " ${CYAN}→ Password     :${NC} ${BOLD}$rand_pwd${NC}"
+echo -e " ${CYAN}→ SSH Port     :${NC} 22"
+echo ""
+echo -e " ${CYAN}→ OS           :${NC} $os_full"
+echo -e " ${CYAN}→ Location     :${NC} $city, $region, $country"
+echo -e " ${CYAN}→ Timezone     :${NC} $timezone"
+echo -e " ${CYAN}→ ISP          :${NC} $isp"
+echo -e "${GREEN}============================================================${NC}"
