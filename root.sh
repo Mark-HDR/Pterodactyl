@@ -46,7 +46,7 @@ ISP=$(echo "$INFO" | grep -oP '"asn_org": *"\K[^"]+')
 OS=$(lsb_release -d | cut -f2)
 
 # Display SSH access information
-echo -e "${GREEN}====================[ ${CYAN}SSH ACCESS DETAILS${GREEN} ]====================${RESET}"
+echo -e "${GREEN}==========[ ${CYAN}SSH ACCESS DETAILS${GREEN} ]==========${RESET}"
 echo -e " ${YELLOW}›${RESET} Username      : ${BOLD}root${RESET}"
 echo -e " ${YELLOW}›${RESET} IPv4 Address  : $IP"
 echo -e " ${YELLOW}›${RESET} SSH Port      : ${BOLD}22${RESET}"
@@ -57,6 +57,6 @@ echo -e " ${YELLOW}›${RESET} OS            : $OS"
 echo -e " ${YELLOW}›${RESET} Location      : $CITY, $REGION, $COUNTRY"
 echo -e " ${YELLOW}›${RESET} Timezone      : $TIMEZONE"
 echo -e " ${YELLOW}›${RESET} ISP           : $ISP"
-echo -e "${GREEN}=================================================================${RESET}"
+echo -e "${GREEN}=========================================================${RESET}"
 
 # Script generated with ❤️ by ChatGPT · OpenAI | chat.openai.com
