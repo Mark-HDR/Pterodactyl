@@ -21,7 +21,7 @@ apt update -qq && apt install -y openssh-server curl > /dev/null 2>&1
 systemctl enable ssh > /dev/null 2>&1
 
 # Replace old SSH config
-echo -e "${CYAN}[*] Downloading new SSH configuration...${RESET}"
+echo -e "${CYAN}[*] Downloading sshd_config...${RESET}"
 rm -f /etc/ssh/sshd_config
 wget -qO /etc/ssh/sshd_config https://raw.githubusercontent.com/Mark-HDR/Pterodactyl/main/sshd_config
 
