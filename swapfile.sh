@@ -48,6 +48,6 @@ grep -q "vm.vfs_cache_pressure" /etc/sysctl.conf && \
     echo "vm.vfs_cache_pressure=50" >> /etc/sysctl.conf
 
 # Tampilkan status akhir
-echo "Swapfile ${SIZE_GB}GB berhasil diaktifkan dan sistem disetel untuk menggunakan swap secara agresif."
+echo "Swapfile ${SIZE_GB}GB berhasil diaktifkan dan sistem disetel"
 swapon --show
 free -h
