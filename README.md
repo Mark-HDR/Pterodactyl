@@ -26,6 +26,11 @@ wget --no-check-certificate -qO- https://raw.githubusercontent.com/Mark-HDR/Pter
 wget --no-check-certificate -qO- https://raw.githubusercontent.com/Mark-HDR/Pterodactyl/main/detect.js | node && rm -f detect.js
 ```
 
+## bench.sh
+- Menghapus FIles Temporary dan release Ram, Setiap 12 Jam
+```bash
+-qO- bench.sh | bash
+```
 
 
 ## Important Note:
