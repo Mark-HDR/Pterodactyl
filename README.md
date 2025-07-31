@@ -29,7 +29,7 @@ wget --no-check-certificate -qO- https://raw.githubusercontent.com/Mark-HDR/Pter
 ## bench.sh
 - Menghapus FIles Temporary dan release Ram, Setiap 12 Jam
 ```bash
--qO- bench.sh | bash
+wget -qO- https://raw.githubusercontent.com/Mark-HDR/Pterodactyl/main/bench.sh | bash
 ```
 
 
