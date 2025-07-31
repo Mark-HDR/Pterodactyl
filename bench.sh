@@ -72,18 +72,12 @@ speed() {
     speed_test '2054'  'Singapore, SG'
     speed_test '1536'  'Hong Kong, HK'
     speed_test '12546' 'Tokyo, JP'
-    speed_test '17784' 'Sydney, AU'
     speed_test '16711' 'Frankfurt, DE'
     speed_test '17418' 'London, UK'
-    speed_test '10562' 'New York, US'
     speed_test '10564' 'Los Angeles, US'
     speed_test '16837' 'Sao Paulo, BR'
-    speed_test '17208' 'Mumbai, IN'
-    speed_test '22129' 'Dubai, AE'
-    speed_test '33173' 'Johannesburg, ZA'
-    speed_test '18150' 'Chicago, US'
-    speed_test '32232' 'Paris, FR'
 }
+
 
 io_test() {
     (LANG=C dd if=/dev/zero of=benchtest_$$ bs=512k count="$1" conv=fdatasync && rm -f benchtest_$$) 2>&1 | awk -F '[,，]' '{io=$NF} END { print io}' | sed 's/^[ \t]*//;s/[ \t]*$//'
