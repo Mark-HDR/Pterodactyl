@@ -1,30 +1,25 @@
 #!/usr/bin/env bash
 #
-# Description: A Bench Script by Teddysun
+# Description: A Bench Script by Teddysun recode by Mark-HDR (expanded servers)
 #
 # Copyright (C) 2015 - 2025 Teddysun <i@teddysun.com>
 # Thanks: LookBack <admin@dwhd.org>
-# URL: https://teddysun.com/444.html
-# https://raw.githubusercontent.com/Mark-HDR/Pterodactyl/main/bench.sh
+# URL: https://raw.githubusercontent.com/Mark-HDR/Pterodactyl/main/bench.sh
 #
 trap _exit INT QUIT TERM
 
 _red() {
     printf '\033[0;31;31m%b\033[0m' "$1"
 }
-
 _green() {
     printf '\033[0;31;32m%b\033[0m' "$1"
 }
-
 _yellow() {
     printf '\033[0;31;33m%b\033[0m' "$1"
 }
-
 _blue() {
     printf '\033[0;31;36m%b\033[0m' "$1"
 }
-
 _exists() {
     local cmd="$1"
     if eval type type >/dev/null 2>&1; then
@@ -37,10 +32,8 @@ _exists() {
     local rt=$?
     return ${rt}
 }
-
 _exit() {
     _red "\nThe script has been terminated. Cleaning up files...\n"
-    # clean up
     rm -fr speedtest.tgz speedtest-cli benchtest_*
     exit 1
 }
@@ -74,7 +67,7 @@ speed_test() {
 }
 
 speed() {
-    speed_test '' 'Speedtest.net'
+    speed_test ''      'Speedtest.net'
     speed_test '7582'  'Jakarta, ID'
     speed_test '2054'  'Singapore, SG'
     speed_test '1536'  'Hong Kong, HK'
@@ -87,6 +80,9 @@ speed() {
     speed_test '16837' 'Sao Paulo, BR'
     speed_test '17208' 'Mumbai, IN'
     speed_test '22129' 'Dubai, AE'
+    speed_test '33173' 'Johannesburg, ZA'
+    speed_test '18150' 'Chicago, US'
+    speed_test '32232' 'Paris, FR'
 }
 
 io_test() {
@@ -119,8 +115,6 @@ calc_size() {
     echo "${total_size} ${unit}"
 }
 
-# since calc_size converts kilobyte to MB, GB and TB
-# to_kibyte converts zfs size from bytes to kilobyte
 to_kibyte() {
     local raw=$1
     awk 'BEGIN{printf "%.0f", '"$raw"' / 1024}'
@@ -254,10 +248,9 @@ install_speedtest() {
 print_intro() {
     echo "-------------------- A Bench.sh Script By Teddysun recode by Mark-HDR -------------------"
     echo " Version            : $(_green v2025-05-08)"
-    echo " Usage              : $(_red "wget -qO- https://raw.githubusercontent.com/Mark-HDR/Pterodactyl/main/bench.sh | bash")"
+    echo " Usage              : $(_red 'wget -qO- https://raw.githubusercontent.com/Mark-HDR/Pterodactyl/main/bench.sh | bash')"
 }
 
-# Get System information
 get_system_info() {
     cname=$(awk -F: '/model name/ {name=$2} END {print name}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//')
     cores=$(awk -F: '/^processor/ {core++} END {print core}' /proc/cpuinfo)
@@ -321,7 +314,7 @@ get_system_info() {
     disk_used_size=$(calc_size $((swap_used_size + in_kernel_no_swap_used_size + zfs_used_size)))
     tcpctrl=$(sysctl net.ipv4.tcp_congestion_control | awk -F ' ' '{print $3}')
 }
-# Print System information
+
 print_system_info() {
     if [ -n "$cname" ]; then
         echo " CPU Model          : $(_blue "$cname")"
@@ -337,14 +330,14 @@ print_system_info() {
         echo " CPU Cache          : $(_blue "$ccache")"
     fi
     if [ -n "$cpu_aes" ]; then
-        echo " AES-NI             : $(_green "\xe2\x9c\x93 Enabled")"
+        echo " AES-NI             : $(_green "✓ Enabled")"
     else
-        echo " AES-NI             : $(_red "\xe2\x9c\x97 Disabled")"
+        echo " AES-NI             : $(_red "✗ Disabled")"
     fi
     if [ -n "$cpu_virt" ]; then
-        echo " VM-x/AMD-V         : $(_green "\xe2\x9c\x93 Enabled")"
+        echo " VM-x/AMD-V         : $(_green "✓ Enabled")"
     else
-        echo " VM-x/AMD-V         : $(_red "\xe2\x9c\x97 Disabled")"
+        echo " VM-x/AMD-V         : $(_red "✗ Disabled")"
     fi
     echo " Total Disk         : $(_yellow "$disk_total_size") $(_blue "($disk_used_size Used)")"
     echo " Total Mem          : $(_yellow "$tram") $(_blue "($uram Used)")"
@@ -404,17 +397,17 @@ print_end_time() {
 
 ! _exists "wget" && _red "Error: wget command not found.\n" && exit 1
 ! _exists "free" && _red "Error: free command not found.\n" && exit 1
-# check for curl/wget
+
 _exists "curl" && local_curl=true
-# test if the host has IPv4/IPv6 connectivity
 [[ -n ${local_curl} ]] && ip_check_cmd="curl -s -m 4" || ip_check_cmd="wget -qO- -T 4"
 ipv4_check=$( (ping -4 -c 1 -W 4 ipv4.google.com >/dev/null 2>&1 && echo true) || ${ip_check_cmd} -4 icanhazip.com 2> /dev/null)
 ipv6_check=$( (ping -6 -c 1 -W 4 ipv6.google.com >/dev/null 2>&1 && echo true) || ${ip_check_cmd} -6 icanhazip.com 2> /dev/null)
 if [[ -z "$ipv4_check" && -z "$ipv6_check" ]]; then
     _yellow "Warning: Both IPv4 and IPv6 connectivity were not detected.\n"
 fi
-[[ -z "$ipv4_check" ]] && online="$(_red "\xe2\x9c\x97 Offline")" || online="$(_green "\xe2\x9c\x93 Online")"
-[[ -z "$ipv6_check" ]] && online+=" / $(_red "\xe2\x9c\x97 Offline")" || online+=" / $(_green "\xe2\x9c\x93 Online")"
+[[ -z "$ipv4_check" ]] && online="$(_red "✗ Offline")" || online="$(_green "✓ Online")"
+[[ -z "$ipv6_check" ]] && online+=" / $(_red "✗ Offline")" || online+=" / $(_green "✓ Online")"
+
 start_time=$(date +%s)
 get_system_info
 check_virt
