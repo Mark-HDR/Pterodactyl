@@ -7,7 +7,7 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 SWAPFILE="/swapfile"
-SIZE_GB=16
+SIZE_GB=2
 
 # Hentikan swap lama jika ada
 if swapon --show | grep -q "$SWAPFILE"; then
