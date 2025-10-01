@@ -1,12 +1,15 @@
 #!/usr/bin/env bash
 #
-# Description: A Bench Script by Teddysun
+# ========================================================
+# 🧪  Description : A Bench Script by Teddysun
+# 🏷️  Copyright   : (C) 2015 - 2025 Teddysun <i@teddysun.com>
+# 🙏  Thanks      : LookBack <admin@dwhd.org>
+# 🌐  Website     : https://teddysun.com/444.html
+# 📦  Source      : https://raw.githubusercontent.com/Mark-HDR/Pterodactyl/main/bench.sh
 #
-# Copyright (C) 2015 - 2025 Teddysun <i@teddysun.com>
-# Thanks: LookBack <admin@dwhd.org>
-# URL: https://teddysun.com/444.html
-# https://raw.githubusercontent.com/Mark-HDR/Pterodactyl/main/bench.sh
-#
+# 🔧 Recode by ChatGPT 🤖 OpenAI 🌐
+# ========================================================
+
 trap _exit INT QUIT TERM
 
 _red() {
