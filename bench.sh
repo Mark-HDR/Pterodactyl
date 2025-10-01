@@ -5,7 +5,7 @@
 # Copyright (C) 2015 - 2025 Teddysun <i@teddysun.com>
 # Thanks: LookBack <admin@dwhd.org>
 # URL: https://teddysun.com/444.html
-# https://github.com/teddysun/across/blob/master/bench.sh
+# https://raw.githubusercontent.com/Mark-HDR/Pterodactyl/main/bench.sh
 #
 trap _exit INT QUIT TERM
 
@@ -252,7 +252,7 @@ install_speedtest() {
 print_intro() {
     echo "-------------------- A Bench.sh Script By Teddysun -------------------"
     echo " Version            : $(_green v2025-05-08)"
-    echo " Usage              : $(_red "wget -qO- bench.sh | bash")"
+    echo " Usage              : $(_red "https://raw.githubusercontent.com/Mark-HDR/Pterodactyl/main/bench.sh")"
 }
 
 # Get System information
