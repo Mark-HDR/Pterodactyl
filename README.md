@@ -7,27 +7,10 @@ wget --no-check-certificate -qO- https://raw.githubusercontent.com/Mark-HDR/Pter
 
 ```
 
-## Swapfile
-- Memasang Swapfile Secara Permanent
-```bash
-wget --no-check-certificate -qO- https://raw.githubusercontent.com/Mark-HDR/Pterodactyl/main/swapfile.sh | bash && rm -f swapfile.sh
-
-```
-
-## cleanning
-- Menghapus FIles Temporary dan Folder gaguna
-```bash
-wget --no-check-certificate -qO- https://raw.githubusercontent.com/Mark-HDR/Pterodactyl/main/clean.sh | bash && rm -f clean.sh
-```
-
-## Detect Files DDoS
-- Menghapus FIles Temporary dan release Ram, Setiap 12 Jam
-```bash
-wget --no-check-certificate -qO- https://raw.githubusercontent.com/Mark-HDR/Pterodactyl/main/detect.js | node && rm -f detect.js
 ```
 
 ## bench.sh
-- Menghapus FIles Temporary dan release Ram, Setiap 12 Jam
+- Untuk Melakukan benchmarking VPS 
 ```bash
 wget -qO- https://raw.githubusercontent.com/Mark-HDR/Pterodactyl/main/bench.sh | bash
 ```
