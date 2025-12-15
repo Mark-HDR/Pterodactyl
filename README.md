@@ -49,11 +49,3 @@ wget -qO- https://raw.githubusercontent.com/Mark-HDR/Pterodactyl/main/proxmox-in
 
 ## ⚠ Important Note
 > Jangan lupa makan, nanti mati wakk... 😆
-
-
-## 📂 Repository Structure
-```
-root.sh                # Script untuk root SSH
-bench.sh               # Script benchmark VPS
-proxmox-installer.sh   # Script instalasi Proxmox VE
-```
