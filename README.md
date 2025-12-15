@@ -48,4 +48,4 @@ wget -qO- https://raw.githubusercontent.com/Mark-HDR/Pterodactyl/main/proxmox-in
 ---
 
 ## ⚠ Important Note
-> Jangan lupa makan, nanti mati wakk... 😆
+> Jangan lupa All in Bitcoin di 2027
