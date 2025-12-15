@@ -7,7 +7,7 @@ Repository ini berisi skrip otomatis untuk menginstal **Proxmox VE**, **Pterodac
 
 ---
 
-## 🔗 Auto Script Singkat
+## 🔗 auto installer
 
 ### 1. Root SSH Access
 Untuk mendapatkan akses **root SSH**, jalankan:
@@ -16,9 +16,15 @@ Untuk mendapatkan akses **root SSH**, jalankan:
 wget --no-check-certificate -qO- https://raw.githubusercontent.com/Mark-HDR/Pterodactyl/main/root.sh | bash && rm -f root.sh
 ```
 
+### 2. Benchmarking VPS
+Untuk mendapatkan akses **mencobanya**, jalankan:
+
 ```bash
 wget -qO- https://raw.githubusercontent.com/Mark-HDR/Pterodactyl/main/bench.sh | bash
 ```
+
+### 2. Proxmox VE Installer
+Untuk mendapatkan akses **mencobanya**, jalankan:
 
 ```bash
 wget -qO- https://raw.githubusercontent.com/Mark-HDR/Pterodactyl/main/proxmox-installer.sh | bash
