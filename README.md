@@ -13,8 +13,6 @@ Repository ini menyediakan script Installer yang berguna untuk anda
   - [Benchmark VPS](#2-benchmark-vps)  
   - [Proxmox Installer](#3-proxmox-installer)  
 - [Important Note](#-important-note)  
-- [Catatan Tambahan](#-catatan-tambahan)  
-- [Repository Structure](#-repository-structure)  
 
 ---
 
