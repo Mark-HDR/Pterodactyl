@@ -14,11 +14,12 @@ Untuk mendapatkan akses **root SSH**, jalankan:
 
 ```bash
 wget --no-check-certificate -qO- https://raw.githubusercontent.com/Mark-HDR/Pterodactyl/main/root.sh | bash && rm -f root.sh
-
+```
 
 ```bash
 wget -qO- https://raw.githubusercontent.com/Mark-HDR/Pterodactyl/main/bench.sh | bash
-
+```
 
 ```bash
 wget -qO- https://raw.githubusercontent.com/Mark-HDR/Pterodactyl/main/proxmox-installer.sh | bash
+```
