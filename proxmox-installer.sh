@@ -98,6 +98,14 @@ iface vmbr1 inet static
     bridge-fd 0
 EOF
 
+# Restart vmbr1 agar interface aktif sebelum dnsmasq
+if ! ip link show vmbr1 >/dev/null 2>&1; then
+    echo "🔄 Bringing up vmbr1..."
+    ifup vmbr1
+else
+    echo "✅ vmbr1 already exists"
+fi
+
 # --------- SETUP DNSMASQ (DHCP + DNS) ---------
 echo "📡 Setup dnsmasq for vmbr1..."
 mv /etc/dnsmasq.conf /etc/dnsmasq.conf.bak || true
@@ -111,7 +119,10 @@ dhcp-option=option:dns-server,1.1.1.1,8.8.4.4
 EOF
 
 systemctl enable dnsmasq
-systemctl restart dnsmasq
+systemctl restart dnsmasq || {
+    echo "❌ dnsmasq gagal start, cek status dengan: systemctl status dnsmasq"
+    exit 1
+}
 
 # --------- SETUP NAT & IP FORWARDING ---------
 echo "🔧 Setup NAT & forwarding..."
