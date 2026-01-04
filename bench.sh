@@ -77,18 +77,24 @@ speed_test() {
 }
 
 speed() {
-    speed_test '' 'Speedtest.net'
-    speed_test '58956' 'Montreal, CA'
-    speed_test '14238' 'Dallas, US'
-    speed_test '16742' 'Amsterdam, NL'
-    speed_test '61933' 'Paris, FR'
-    speed_test '24447' 'Shanghai, CN'
-    speed_test '50467' 'Tokyo, JP'
-    speed_test '1536'  'Hong Kong, CN'
-    speed_test '67902' 'Mumbai, IN'
-    speed_test '7311'  'Singapore, SG'
-    speed_test '72088'  'Jakarta, ID'
+    speed_test ''       'Speedtest.net'
+    speed_test '38471'  'Jakarta, ID'
+    speed_test '50406'   'Singapore, SG'
+    speed_test '61296'   'Hong Kong, HK'
+    speed_test '48463'  'Tokyo, JP'
+    speed_test '73226'  'Seoul, KR'
+    speed_test '73041'  'Mumbai, IN'
+    speed_test '17336'  'Dubai, AE'
+    speed_test '6355'  'Sydney, AU'
+    speed_test '31120'  'Frankfurt, DE'
+    speed_test '14962'  'Paris, FR'
+    speed_test '64515'  'London, UK'
+    speed_test '53393'  'Toronto, CA'
+    speed_test '51171'  'New York, US'
+    speed_test '22288'  'Dallas, US'
+    speed_test '16347'  'São Paulo, BR'
 }
+
 
 io_test() {
     (LANG=C dd if=/dev/zero of=benchtest_$$ bs=512k count="$1" conv=fdatasync && rm -f benchtest_$$) 2>&1 | awk -F '[,，]' '{io=$NF} END { print io}' | sed 's/^[ \t]*//;s/[ \t]*$//'
