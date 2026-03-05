@@ -11,7 +11,6 @@ Repository ini menyediakan script Installer yang berguna untuk anda
 - [Auto Script Singkat](#auto-script-singkat)  
   - [Root SSH Access](#1-root-ssh-access)  
   - [Benchmark VPS](#2-benchmark-vps)  
-  - [Proxmox Installer](#3-proxmox-installer)  
 - [Important Note](#-important-note)  
 
 ---
@@ -35,13 +34,6 @@ wget -qO- https://raw.githubusercontent.com/Mark-HDR/Pterodactyl/main/bench.sh |
 ```
 
 ---
-
-### 3. Proxmox Installer
-Instal **Proxmox VE** dengan script otomatis:
-
-```bash
-wget -qO- https://raw.githubusercontent.com/Mark-HDR/Pterodactyl/main/proxmox-installer.sh | bash
-```
 
 ---
 
